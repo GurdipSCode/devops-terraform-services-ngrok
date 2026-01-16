@@ -1,0 +1,6 @@
+# .semgrep.yml
+rules: []
+
+# Pull from your registry
+includes:
+  - "https://github.com/GurdipSCode/devops-rules-semgrep"
