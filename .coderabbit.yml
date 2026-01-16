@@ -1,0 +1,117 @@
+# CodeRabbit configuration for a Terraform *service* repository
+# This repo CONSUMES Terraform modules (does not publish modules)
+
+version: 1
+
+language: terraform
+
+reviews:
+  auto_review:
+    enabled: true
+    drafts: false
+
+  # Be strict on infra correctness, lighter on style
+  rules:
+    - name: terraform-best-practices
+      enabled: true
+
+    - name: terraform-security
+      enabled: true
+
+    - name: terraform-readability
+      enabled: true
+
+    - name: terraform-style
+      enabled: false
+
+  # Focus on meaningful infra feedback
+  focus_areas:
+    - module_usage
+    - provider_configuration
+    - variable_validation
+    - backend_configuration
+    - state_management
+    - security
+    - lifecycle_rules
+
+  # Avoid nitpicking generated or vendor content
+  ignore:
+    paths:
+      - ".terraform/**"
+      - "**/.terraform.lock.hcl"
+      - "**/*.tfstate"
+      - "**/*.tfstate.backup"
+      - "**/vendor/**"
+      - "**/generated/**"
+      - "**/dist/**"
+
+  # PR size heuristics
+  limits:
+    max_files_changed: 40
+    max_lines_changed: 1200
+
+comments:
+  # Keep comments actionable and infra-focused
+  style: concise
+  tone: professional
+  include_code_snippets: true
+
+  # Prefer suggestions over blocking comments
+  suggestion_preference: true
+
+checks:
+  # Terraform service-specific checks
+  terraform:
+    validate:
+      enabled: true
+
+    formatting:
+      enabled: true
+
+    lint:
+      enabled: true
+      tool: tflint
+
+    security_scan:
+      enabled: true
+      tool: checkov
+
+  # Git hygiene
+  git:
+    check_large_files: true
+    check_secrets: true
+
+# Encourage safe module consumption
+guidance:
+  module_usage:
+    require_version_constraints: true
+    pin_module_versions: true
+    warn_on_branch_or_sha_refs: true
+    discourage_local_modules: true
+
+  providers:
+    require_version_constraints: true
+    require_explicit_source: true
+
+  variables:
+    require_descriptions: true
+    require_types: true
+    encourage_validation_blocks: true
+
+  outputs:
+    discourage_excessive_outputs: true
+
+  lifecycle:
+    warn_on_ignore_changes: true
+    warn_on_create_before_destroy: false
+
+# Reduce noise on auto-generated diffs
+diff:
+  ignore_whitespace: true
+  context_lines: 3
+
+# Summary comment at end of PR
+summary:
+  enabled: true
+  include_risk_assessment: true
+  include_breaking_change_detection: true
